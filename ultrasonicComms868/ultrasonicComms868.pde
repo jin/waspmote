@@ -22,7 +22,7 @@
 // Width of each bin
 #define BIN_WIDTH  64
 // Number of bins
-#define NUM_BINS  (MAX_RANGE / BIN_WIDTH) + 1
+#define NUM_BINS  (MAX_RANGE / BIN_WIDTH)+1
 // Time between pulse width reads
 #define READ_INTERVAL_MS  100
 
