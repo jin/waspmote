@@ -16,13 +16,13 @@
 // Constant to convert pulse width to range reading, in Âµs/cm
 #define PULSE_WIDTH_CONST  58
 // Number of readings to sample from the ultrasonic sensor
-#define SAMPLE_SIZE  30
+#define SAMPLE_SIZE  20
 // Maximum measureable range.  All readings greater than will be truncated to this value
 #define MAX_RANGE  512
 // Width of each bin
 #define BIN_WIDTH  64
 // Number of bins
-#define NUM_BINS  (MAX_RANGE / BIN_WIDTH)
+#define NUM_BINS  (MAX_RANGE / BIN_WIDTH) + 1
 // Time between pulse width reads
 #define READ_INTERVAL_MS  100
 
@@ -86,7 +86,7 @@ uint16_t getRange()
 
   // Limit range
   if (range > MAX_RANGE)
-    range = MAX_RANGE;
+    range = MAX_RANGE + 1;
 
   return range;
 }
