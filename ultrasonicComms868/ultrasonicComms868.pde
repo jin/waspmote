@@ -18,18 +18,16 @@
 // Number of readings to sample from the ultrasonic sensor
 #define SAMPLE_SIZE  20
 // Maximum measureable range.  All readings greater than will be truncated to this value
-#define MAX_RANGE  512
+#define MAX_RANGE  511
 // Width of each bin
 #define BIN_WIDTH  64
 // Number of bins
-#define NUM_BINS  (MAX_RANGE / BIN_WIDTH) + 1
-// Time between pulse width reads
-#define READ_INTERVAL_MS  100
+#define NUM_BINS  ((MAX_RANGE / BIN_WIDTH) + 1)
 
-// Constraint: Max range Ã— Sample size ? 65535 so that summation of all range values will
+// Constraint: Max range * Sample size <= 65535 so that summation of all range values will
 // not overflow uint16_t
-#if (((MAX_RANGE) * (SAMPLE_SIZE)) > (USHRT_MAX))
-#error "Max range Ã— Sample size > 65535!"
+#if (((MAX_RANGE) * (SAMPLE_SIZE)) > 65535)
+#error "Max range * Sample size > 65535!"
 #endif
 
 
@@ -74,8 +72,6 @@ uint16_t getRange()
     // Update the modal bin
     if (freqs[bin] > freqs[modalBin])
       modalBin = bin;
-
-    delay(READ_INTERVAL_MS);
   }
 
   // Calculate final range: the average of all readings in the modal bin
