@@ -10,7 +10,6 @@
 #define LOT_OCCUPIED 1
 #define LOT_VACANT 0
 
-
 #include <limits.h>
 
 // Constant to convert pulse width to range reading, in Âµs/cm
@@ -31,15 +30,10 @@
 #endif
 
 
-
-
 packetXBee* paq_sent;
 char data[100];
 uint16_t pktCount, reading = 0;
 uint8_t nodeID = 5, batteryLevel; 
-
-
-
 
 
 /**
@@ -47,7 +41,7 @@ uint8_t nodeID = 5, batteryLevel;
  *
  * 1) Read SAMPLE_SIZE readings from the ultrasonic sensor, at READ_INTERVAL_MS intervals
  * 2) Place each reading into its own "bin", and sum up all readings for that bin.
- *    A reading R is placed in bin B if R?[B Ã— BIN_WIDTH, (B+1) Ã— BIN_WIDTH), i.e. B = R / BIN_WIDTH
+ *    A reading R is placed in bin B if R∈[B * BIN_WIDTH, (B+1) * BIN_WIDTH), i.e. B = R / BIN_WIDTH
  * 3) Find the "modal bin", i.e. the bin with the most number of readings
  * 4) Return the average value of all readings from the modal bin
  */
@@ -88,7 +82,6 @@ uint16_t getRange()
 }
 
 
-
 void setPacketParams(){
   paq_sent=(packetXBee*) calloc(1,sizeof(packetXBee)); 
   paq_sent->mode=BROADCAST;
@@ -96,13 +89,12 @@ void setPacketParams(){
   paq_sent->opt=1; 
   xbee868.hops=0;
   xbee868.setOriginParams(paq_sent, node5_16, MY_TYPE);
-  xbee868.setDestinationParams(paq_sent, addrBroadcast64 , data, MAC_TYPE, DATA_ABSOLUTE); //broadcast
+  xbee868.setDestinationParams(paq_sent, addrBroadcast64 , data, MAC_TYPE, DATA_ABSOLUTE);
 }
 
 
 void setPacketData(){
   Utils.blinkLEDs(1);
-  //reading = pulseIn(DIGITAL1, HIGH) / 58;
   sprintf(data,"%u,%u,%u,%u,\r\n", nodeID, pktCount, PWR.getBatteryLevel(), getRange());
 }
 
@@ -132,9 +124,10 @@ void setup(){
   PWR.setSensorPower(SENS_5V, SENS_ON);
 }
 
+
 void loop(){
   for(uint16_t counter = 1; counter <= 1; counter++){
-    flood(0,65535,5000);
+    flood(0,65535,3000);
   }  
 }
 

@@ -3,7 +3,6 @@ void analyzeData()
   xbee802.treatData();  
   if( !xbee802.error_RX )
   {
-    //xbee802.getRSSI();
     Utils.blinkLEDs(25);    
     while(xbee802.pos>0)
     {       
@@ -37,5 +36,3 @@ void loop()
     analyzeData(); 
   }  
 }
-
-
