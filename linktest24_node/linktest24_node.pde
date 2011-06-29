@@ -1,44 +1,33 @@
-packetXBee* pkt;
 char data[100];
 uint16_t pktCount;
-uint8_t nodeID = 1;
+float voltage;
 
-void setPacketParams(){
-  pkt=(packetXBee*) calloc(1,sizeof(packetXBee));
-  pkt->mode=BROADCAST;
-  pkt->packetID=0x52;
-  pkt->opt=1;
-  xbee802.hops=0;
-  xbee802.setOriginParams(pkt, "0001", MY_TYPE);
-  xbee802.setDestinationParams(pkt, "000000000000FFFF", data, MAC_TYPE, DATA_ABSOLUTE);
-}
 
 void setPacketData(){
   Utils.blinkLEDs(1);
-  sprintf(data,"%u,%u,%u,\r\n", nodeID, pktCount, xbee802.powerLevel);
+  voltage = PWR.getBatteryVolts();
+  int d1 = voltage;
+  float f2 = voltage - d1;
+  int d2 = trunc(f2 * 10000);
+  sprintf(data,"#%u,%u,%u,%d.%04d,\r\n", pktCount, PWR.getBatteryLevel(), xbee802.powerLevel, d1, d2);
 }
 
-void sendPacketAPI(){
-  xbee802.sendXBee(pkt);
-  free(pkt);
-  pkt=NULL;
-}
 
 void sendPacketNoAPI(){
   xbee802.send("000000000000FFFF", data);
   XBee.flush();
 }
 
+
 void flood(uint8_t pwrLvl, uint16_t maxPackets, uint16_t delayVal){
   xbee802.setPowerLevel(pwrLvl);
   for(pktCount = 1; pktCount <= maxPackets; pktCount++){
     setPacketData();
-    //setPacketParams(); // Comment this if sending with API header
-    //sendPacketAPI(); 
     sendPacketNoAPI();
-    //delay(delayVal);
+    delay(delayVal);
   }
 }
+
 
 void setup(){
   xbee802.init(XBEE_802_15_4,FREQ2_4G,NORMAL);
@@ -48,11 +37,7 @@ void setup(){
 
 void loop(){
   for(uint16_t counter = 1; counter <= 1; counter++){
-    flood(0,100,0);
-    flood(1,100,0);
-    flood(2,100,0);
-    flood(3,100,0);
-    flood(4,100,0);
+    flood(0,1000,1);
   }
-  delay(120000);
+  //delay(120000);
 }
