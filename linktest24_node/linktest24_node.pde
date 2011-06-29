@@ -3,7 +3,6 @@ char data[100];
 uint16_t pktCount;
 uint8_t nodeID = 1;
 
-/* Begin packet with API header */
 void setPacketParams(){
   pkt=(packetXBee*) calloc(1,sizeof(packetXBee));
   pkt->mode=BROADCAST;
@@ -24,17 +23,21 @@ void sendPacketAPI(){
   free(pkt);
   pkt=NULL;
 }
-/* End packet with API header */
+
+void sendPacketNoAPI(){
+  xbee802.send("000000000000FFFF", data);
+  XBee.flush();
+}
 
 void flood(uint8_t pwrLvl, uint16_t maxPackets, uint16_t delayVal){
   xbee802.setPowerLevel(pwrLvl);
   for(pktCount = 1; pktCount <= maxPackets; pktCount++){
     setPacketData();
-    setPacketParams();
-    sendPacketAPI();
+    //setPacketParams(); // Comment this if sending with API header
+    //sendPacketAPI(); 
+    sendPacketNoAPI();
     //delay(delayVal);
   }
-  XBee.flush();
 }
 
 void setup(){
